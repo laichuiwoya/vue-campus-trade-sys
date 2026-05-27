@@ -1,19 +1,21 @@
 # Campus Trade Sys
 
-基于 Spring Boot + Vue 3 + MySQL 的校园二手交易平台，包含用户登录注册、商品发布、商品市场、收藏、订单、评论、图片上传和管理员后台等功能。
+A campus second-hand trading platform built with Spring Boot, Vue 3, and MySQL.
+The project contains user authentication, product publishing, product browsing,
+favorites, orders, comments, image upload, inventory handling, and an admin panel.
 
-## 项目结构
+## Project Structure
 
 ```text
-vue校园交易系统
-├── campus-trade-server   # 后端 Spring Boot 项目
-├── campus-trade-web      # 前端 Vue 3 + Vite 项目
-└── README.md
+vue-campus-trade-system
++-- campus-trade-server   # Spring Boot backend
++-- campus-trade-web      # Vue 3 + Vite frontend
++-- README.md
 ```
 
-## 技术栈
+## Tech Stack
 
-后端：
+Backend:
 
 - Spring Boot 3.3.2
 - Java 21
@@ -23,7 +25,7 @@ vue校园交易系统
 - BCrypt
 - Maven
 
-前端：
+Frontend:
 
 - Vue 3
 - Vite
@@ -32,31 +34,32 @@ vue校园交易系统
 - Axios
 - Element Plus
 
-## 主要功能
+## Features
 
-- 用户注册、登录、JWT 鉴权
-- 商品列表、详情、搜索
-- 商品发布、编辑、删除
-- 商品库存 quantity 展示和下单扣减
-- 商品封面图片上传
-- 商品收藏
-- 订单创建、订单列表、订单状态更新
-- 商品评论
-- 管理员后台
-- 用户状态管理
-- 商品状态管理
-- 分类管理
-- 跨域配置和静态上传文件访问
+- User registration and login
+- JWT authentication
+- Product list, detail, and keyword search
+- Product publishing, editing, and deletion
+- Product cover image upload
+- Product inventory display and order deduction through `quantity`
+- Favorite products
+- Order creation, order list, and order status update
+- Product comments
+- Admin user management
+- Admin product status management
+- Admin category management
+- CORS configuration
+- Static access for uploaded files
 
-## 数据库说明
+## Database
 
-数据库初始化脚本：
+The initialization SQL file is:
 
 ```text
 campus-trade-server/src/main/resources/sql/init.sql
 ```
 
-脚本会创建 `campus_trade` 数据库，并初始化以下表：
+It creates the `campus_trade` database and these tables:
 
 - `sys_user`
 - `category`
@@ -66,20 +69,20 @@ campus-trade-server/src/main/resources/sql/init.sql
 - `order_log`
 - `comment`
 
-默认账号：
+Default accounts:
 
 ```text
-管理员：admin / 123456
-普通用户：user01 / 123456
+Admin: admin / 123456
+User:  user01 / 123456
 ```
 
-数据库连接配置在：
+Database connection config:
 
 ```text
 campus-trade-server/src/main/resources/application.yml
 ```
 
-默认配置：
+Default MySQL config:
 
 ```yaml
 spring:
@@ -89,80 +92,75 @@ spring:
     password: 123456
 ```
 
-如本地 MySQL 账号或密码不同，请修改 `application.yml` 后再启动后端。
+If your local MySQL username or password is different, update
+`application.yml` before starting the backend.
 
-## 后端启动
+## Backend Setup
 
-进入后端目录：
+Run the database initialization script first:
+
+```text
+campus-trade-server/src/main/resources/sql/init.sql
+```
+
+Start the backend:
 
 ```bash
 cd campus-trade-server
-```
-
-安装依赖并启动：
-
-```bash
 mvn spring-boot:run
 ```
 
-后端默认端口：
+Backend URL:
 
 ```text
 http://localhost:8080
 ```
 
-健康检查：
+Health check:
 
 ```text
 GET http://localhost:8080/api/ping
 ```
 
-## 前端启动
+## Frontend Setup
 
-进入前端目录：
+Install dependencies and start the Vite dev server:
 
 ```bash
 cd campus-trade-web
-```
-
-安装依赖：
-
-```bash
 npm install
-```
-
-启动开发服务器：
-
-```bash
 npm run dev
 ```
 
-前端默认通过 Axios 请求后端接口：
+The frontend calls the backend through Axios with this base URL:
 
 ```text
 http://localhost:8080/api
 ```
 
-配置位置：
+Config file:
 
 ```text
 campus-trade-web/src/api/request.js
 ```
 
-## 前后端连接方式
+## Frontend And Backend Connection
 
-前端通过 Axios 调用后端 REST API。登录成功后，后端返回 JWT，前端保存到 `localStorage`，后续请求自动携带：
+The Vue frontend calls Spring Boot REST APIs through Axios.
+After login, the backend returns a JWT token. The frontend stores it in
+`localStorage` and attaches it to later requests:
 
 ```text
 Authorization: Bearer <token>
 ```
 
-后端通过 `LoginInterceptor` 解析 token，并把当前用户信息写入请求属性，供 Controller 使用。
+The backend `LoginInterceptor` parses the token and writes the current user
+information into request attributes for controllers.
 
-调用链路：
+Request flow:
 
 ```text
-Vue 页面
+Vue page
 ↓
 src/api/modules.js
 ↓
@@ -177,101 +175,107 @@ Mapper
 MySQL
 ```
 
-## 核心接口
+## Main APIs
 
-认证：
+Authentication:
 
-- `POST /api/auth/register` 用户注册
-- `POST /api/auth/login` 用户登录
-- `GET /api/auth/me` 当前登录用户
+- `POST /api/auth/register` Register
+- `POST /api/auth/login` Login
+- `GET /api/auth/me` Current user
 
-商品：
+Products:
 
-- `GET /api/goods` 商品列表和搜索
-- `GET /api/goods/{id}` 商品详情
-- `POST /api/goods` 发布商品
-- `PUT /api/goods` 修改商品
-- `DELETE /api/goods/{id}` 删除商品
+- `GET /api/goods` Product list and search
+- `GET /api/goods/{id}` Product detail
+- `POST /api/goods` Create product
+- `PUT /api/goods` Update product
+- `DELETE /api/goods/{id}` Delete product
 
-分类：
+Categories:
 
-- `GET /api/categories` 分类列表
+- `GET /api/categories` Category list
 
-收藏：
+Favorites:
 
-- `GET /api/favorites` 收藏列表
-- `POST /api/favorites` 添加收藏
-- `DELETE /api/favorites/{id}` 取消收藏
+- `GET /api/favorites` Favorite list
+- `POST /api/favorites` Add favorite
+- `DELETE /api/favorites/{id}` Remove favorite
 
-订单：
+Orders:
 
-- `GET /api/orders` 订单列表
-- `POST /api/orders` 创建订单
-- `PUT /api/orders` 更新订单
+- `GET /api/orders` Order list
+- `POST /api/orders` Create order
+- `PUT /api/orders` Update order
 
-评论：
+Comments:
 
-- `GET /api/comments` 评论列表
-- `POST /api/comments` 发布评论
+- `GET /api/comments` Comment list
+- `POST /api/comments` Create comment
 
-文件：
+Files:
 
-- `POST /api/files/upload` 上传图片
+- `POST /api/files/upload` Upload image
 
-管理员：
+Admin:
 
-- `GET /api/admin/users` 用户管理
-- `PUT /api/admin/users/{id}/status` 修改用户状态
-- `GET /api/admin/goods` 商品管理
-- `PUT /api/admin/goods/{id}/status` 修改商品状态
-- `GET /api/admin/orders` 订单管理
-- `GET /api/admin/categories` 分类管理
-- `POST /api/admin/categories` 新增分类
-- `PUT /api/admin/categories` 修改分类
-- `DELETE /api/admin/categories/{id}` 删除分类
+- `GET /api/admin/users` User management
+- `PUT /api/admin/users/{id}/status` Update user status
+- `GET /api/admin/goods` Product management
+- `PUT /api/admin/goods/{id}/status` Update product status
+- `GET /api/admin/orders` Order management
+- `GET /api/admin/categories` Category management
+- `POST /api/admin/categories` Create category
+- `PUT /api/admin/categories` Update category
+- `DELETE /api/admin/categories/{id}` Delete category
 
-## 前端页面
+## Frontend Routes
 
-- `/` 商品市场
-- `/login` 登录注册
-- `/publish` 发布商品
-- `/favorites` 我的收藏
-- `/orders` 我的订单
-- `/admin` 管理员后台
+- `/` Product market
+- `/login` Login and register
+- `/publish` Publish product
+- `/favorites` My favorites
+- `/orders` My orders
+- `/admin` Admin panel
 
-## 图片上传
+## Image Upload
 
-图片上传接口会把文件保存到后端项目运行目录下的 `uploads` 文件夹，并通过下面的静态地址访问：
+Uploaded images are stored under the backend runtime directory:
 
 ```text
-http://localhost:8080/uploads/日期/文件名
+uploads/yyyy-MM-dd/file-name
 ```
 
-相关代码：
+They are exposed through:
+
+```text
+http://localhost:8080/uploads/yyyy-MM-dd/file-name
+```
+
+Related files:
 
 - `campus-trade-server/src/main/java/com/campus/trade/controller/FileController.java`
 - `campus-trade-server/src/main/java/com/campus/trade/config/WebConfig.java`
 
-## 打包
+## Build
 
-后端打包：
+Backend:
 
 ```bash
 cd campus-trade-server
 mvn clean package
 ```
 
-前端打包：
+Frontend:
 
 ```bash
 cd campus-trade-web
 npm run build
 ```
 
-## 注意事项
+## Notes
 
-- 启动前请先执行 `init.sql` 初始化数据库。
-- 后端默认端口是 `8080`。
-- 前端 Axios 默认请求 `http://localhost:8080/api`。
-- 管理员页面需要使用 `admin / 123456` 登录。
-- 上传图片时需要确保后端服务正在运行。
+- Run `init.sql` before starting the backend.
+- Backend port is `8080`.
+- Frontend API base URL is `http://localhost:8080/api`.
+- Use `admin / 123456` to access the admin panel.
+- Keep the backend running when uploading images from the frontend.
